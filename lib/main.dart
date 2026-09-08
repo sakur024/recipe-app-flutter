@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'core/constants/app_constants.dart';
-import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
+import 'screens/home/home_screen.dart';
+import 'widgets/bottom_nav_bar.dart';
 
 void main() {
   runApp(const RecipeApp());
@@ -17,45 +18,57 @@ class RecipeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
       theme: AppTheme.light,
-      home: const PlaceholderHomeScreen(),
+      home: const MainShell(),
     );
   }
 }
 
-/// Temporary placeholder screen.
-/// Will be replaced with the actual home screen in a future milestone.
-class PlaceholderHomeScreen extends StatelessWidget {
-  const PlaceholderHomeScreen({super.key});
+/// Root shell that holds the current screen and bottom navigation.
+///
+/// Only the Home tab is functional at this milestone; the other
+/// tabs display simple placeholders.
+class MainShell extends StatefulWidget {
+  const MainShell({super.key});
+
+  @override
+  State<MainShell> createState() => _MainShellState();
+}
+
+class _MainShellState extends State<MainShell> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.appName),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          HomeScreen(),
+          _PlaceholderTab(label: 'Favorites'),
+          _PlaceholderTab(label: 'Meal Plan'),
+          _PlaceholderTab(label: 'Settings'),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.restaurant_menu_rounded,
-              size: 64,
-              color: AppColors.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              AppConstants.appName,
-              style: textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Design system ready',
-              style: textTheme.bodySmall,
-            ),
-          ],
-        ),
+      bottomNavigationBar: AppBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+      ),
+    );
+  }
+}
+
+/// Minimal placeholder for tabs that are not yet implemented.
+class _PlaceholderTab extends StatelessWidget {
+  const _PlaceholderTab({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }
