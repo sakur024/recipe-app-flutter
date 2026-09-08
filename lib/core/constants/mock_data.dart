@@ -1,3 +1,4 @@
+import '../../models/ingredient.dart';
 import '../../models/recipe.dart';
 
 /// Local mock recipes for development.
@@ -14,6 +15,15 @@ const List<Recipe> mockRecipes = [
     category: 'Lunch',
     rating: 4.7,
     reviewCount: 128,
+    defaultServings: 2,
+    ingredients: [
+      Ingredient(name: 'Pizza Dough', quantity: '250g'),
+      Ingredient(name: 'Tomato Sauce', quantity: '100ml'),
+      Ingredient(name: 'Mozzarella', quantity: '150g'),
+      Ingredient(name: 'Jalapeño', quantity: '2 pcs'),
+      Ingredient(name: 'Black Beans', quantity: '80g'),
+      Ingredient(name: 'Red Onion', quantity: '1/2 pc'),
+    ],
   ),
   Recipe(
     name: 'French Toast',
@@ -24,6 +34,15 @@ const List<Recipe> mockRecipes = [
     category: 'Breakfast',
     rating: 4.5,
     reviewCount: 96,
+    defaultServings: 2,
+    ingredients: [
+      Ingredient(name: 'Bread Slices', quantity: '4 pcs'),
+      Ingredient(name: 'Eggs', quantity: '2 pcs'),
+      Ingredient(name: 'Milk', quantity: '60ml'),
+      Ingredient(name: 'Butter', quantity: '20g'),
+      Ingredient(name: 'Cinnamon', quantity: '1 tsp'),
+      Ingredient(name: 'Maple Syrup', quantity: '30ml'),
+    ],
   ),
   Recipe(
     name: 'Spicy Ramen Noodles',
@@ -34,6 +53,16 @@ const List<Recipe> mockRecipes = [
     category: 'Dinner',
     rating: 4.8,
     reviewCount: 215,
+    defaultServings: 1,
+    ingredients: [
+      Ingredient(name: 'Ramen Noodles', quantity: '200g'),
+      Ingredient(name: 'Chicken Broth', quantity: '500ml'),
+      Ingredient(name: 'Soy Sauce', quantity: '2 tbsp'),
+      Ingredient(name: 'Chili Paste', quantity: '1 tbsp'),
+      Ingredient(name: 'Soft Boiled Egg', quantity: '1 pc'),
+      Ingredient(name: 'Green Onion', quantity: '2 stalks'),
+      Ingredient(name: 'Nori', quantity: '2 sheets'),
+    ],
   ),
   Recipe(
     name: 'Beef Steak',
@@ -44,6 +73,15 @@ const List<Recipe> mockRecipes = [
     category: 'Dinner',
     rating: 4.9,
     reviewCount: 312,
+    defaultServings: 1,
+    ingredients: [
+      Ingredient(name: 'Ribeye Steak', quantity: '300g'),
+      Ingredient(name: 'Olive Oil', quantity: '2 tbsp'),
+      Ingredient(name: 'Garlic', quantity: '3 cloves'),
+      Ingredient(name: 'Butter', quantity: '30g'),
+      Ingredient(name: 'Rosemary', quantity: '2 sprigs'),
+      Ingredient(name: 'Salt & Pepper', quantity: 'to taste'),
+    ],
   ),
   Recipe(
     name: 'Berry Pancakes',
@@ -54,6 +92,15 @@ const List<Recipe> mockRecipes = [
     category: 'Breakfast',
     rating: 4.6,
     reviewCount: 87,
+    defaultServings: 2,
+    ingredients: [
+      Ingredient(name: 'Flour', quantity: '150g'),
+      Ingredient(name: 'Eggs', quantity: '2 pcs'),
+      Ingredient(name: 'Milk', quantity: '200ml'),
+      Ingredient(name: 'Mixed Berries', quantity: '120g'),
+      Ingredient(name: 'Sugar', quantity: '2 tbsp'),
+      Ingredient(name: 'Butter', quantity: '20g'),
+    ],
   ),
   Recipe(
     name: 'Caesar Salad',
@@ -64,6 +111,15 @@ const List<Recipe> mockRecipes = [
     category: 'Lunch',
     rating: 4.3,
     reviewCount: 64,
+    defaultServings: 2,
+    ingredients: [
+      Ingredient(name: 'Romaine Lettuce', quantity: '1 head'),
+      Ingredient(name: 'Parmesan', quantity: '50g'),
+      Ingredient(name: 'Croutons', quantity: '60g'),
+      Ingredient(name: 'Caesar Dressing', quantity: '60ml'),
+      Ingredient(name: 'Chicken Breast', quantity: '200g'),
+      Ingredient(name: 'Lemon', quantity: '1/2 pc'),
+    ],
   ),
   Recipe(
     name: 'Chocolate Lava Cake',
@@ -74,5 +130,14 @@ const List<Recipe> mockRecipes = [
     category: 'Dessert',
     rating: 4.8,
     reviewCount: 174,
+    defaultServings: 2,
+    ingredients: [
+      Ingredient(name: 'Dark Chocolate', quantity: '150g'),
+      Ingredient(name: 'Butter', quantity: '100g'),
+      Ingredient(name: 'Eggs', quantity: '3 pcs'),
+      Ingredient(name: 'Sugar', quantity: '80g'),
+      Ingredient(name: 'Flour', quantity: '30g'),
+      Ingredient(name: 'Vanilla Extract', quantity: '1 tsp'),
+    ],
   ),
 ];

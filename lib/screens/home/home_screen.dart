@@ -9,6 +9,7 @@ import '../../widgets/home/home_header.dart';
 import '../../widgets/home/promo_banner.dart';
 import '../../widgets/home/recipe_card.dart';
 import '../../widgets/home/recipe_search_bar.dart';
+import '../recipe_details/recipe_details_screen.dart';
 
 /// The application's Home screen.
 ///
@@ -111,7 +112,19 @@ class _QuickAndEasySection extends StatelessWidget {
             ),
             itemCount: recipes.length,
             separatorBuilder: (_, _) => const SizedBox(width: 14),
-            itemBuilder: (_, index) => RecipeCard(recipe: recipes[index]),
+            itemBuilder: (context, index) {
+              final recipe = recipes[index];
+              return RecipeCard(
+                recipe: recipe,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => RecipeDetailsScreen(recipe: recipe),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ),
       ],
