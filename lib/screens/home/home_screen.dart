@@ -4,7 +4,6 @@ import '../../core/constants/app_constants.dart';
 import '../../core/constants/mock_data.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../models/recipe.dart';
-import '../../services/favorite_state.dart';
 import '../../widgets/home/category_section.dart';
 import '../../widgets/home/home_header.dart';
 import '../../widgets/home/promo_banner.dart';
@@ -18,9 +17,7 @@ import '../recipe_details/recipe_details_screen.dart';
 /// and the "Quick & Easy" recipe list. The screen is vertically
 /// scrollable while horizontal sections scroll independently.
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.favoriteState});
-
-  final FavoriteState favoriteState;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -75,10 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
 
           // ── Quick & Easy ────────────────────────────────────────
-          _QuickAndEasySection(
-            recipes: recipes,
-            favoriteState: widget.favoriteState,
-          ),
+          _QuickAndEasySection(recipes: recipes),
         ],
       ),
     );
@@ -90,13 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
 // ─────────────────────────────────────────────────────────────────────
 
 class _QuickAndEasySection extends StatelessWidget {
-  const _QuickAndEasySection({
-    required this.recipes,
-    required this.favoriteState,
-  });
+  const _QuickAndEasySection({required this.recipes});
 
   final List<Recipe> recipes;
-  final FavoriteState favoriteState;
 
   @override
   Widget build(BuildContext context) {
@@ -129,10 +119,7 @@ class _QuickAndEasySection extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => RecipeDetailsScreen(
-                        recipe: recipe,
-                        favoriteState: favoriteState,
-                      ),
+                      builder: (_) => RecipeDetailsScreen(recipe: recipe),
                     ),
                   );
                 },

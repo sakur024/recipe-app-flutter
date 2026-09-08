@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import 'package:recipe_app/core/constants/mock_data.dart';
 import 'package:recipe_app/main.dart';
+import 'package:recipe_app/providers/favorites_provider.dart';
 import 'package:recipe_app/screens/favorites/favorites_screen.dart';
 import 'package:recipe_app/screens/recipe_details/recipe_details_screen.dart';
-import 'package:recipe_app/services/favorite_state.dart';
 
 void main() {
   testWidgets('App renders Home screen with key sections',
@@ -47,13 +48,13 @@ void main() {
   testWidgets('Recipe Details screen shows recipe information',
       (WidgetTester tester) async {
     final recipe = mockRecipes.first;
-    final favoriteState = FavoriteState();
+    final favoritesProvider = FavoritesProvider();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: RecipeDetailsScreen(
-          recipe: recipe,
-          favoriteState: favoriteState,
+      ChangeNotifierProvider.value(
+        value: favoritesProvider,
+        child: MaterialApp(
+          home: RecipeDetailsScreen(recipe: recipe),
         ),
       ),
     );
@@ -81,13 +82,13 @@ void main() {
   testWidgets('Serving selector increments and decrements',
       (WidgetTester tester) async {
     final recipe = mockRecipes.first; // defaultServings = 2
-    final favoriteState = FavoriteState();
+    final favoritesProvider = FavoritesProvider();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: RecipeDetailsScreen(
-          recipe: recipe,
-          favoriteState: favoriteState,
+      ChangeNotifierProvider.value(
+        value: favoritesProvider,
+        child: MaterialApp(
+          home: RecipeDetailsScreen(recipe: recipe),
         ),
       ),
     );
@@ -110,16 +111,17 @@ void main() {
     expect(find.text('${recipe.defaultServings - 1}'), findsOneWidget);
   });
 
-  testWidgets('Favorite button toggles in RecipeDetailsScreen and updates FavoriteState',
+  testWidgets(
+      'Favorite button toggles in RecipeDetailsScreen and updates FavoritesProvider',
       (WidgetTester tester) async {
     final recipe = mockRecipes.first;
-    final favoriteState = FavoriteState();
+    final favoritesProvider = FavoritesProvider();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: RecipeDetailsScreen(
-          recipe: recipe,
-          favoriteState: favoriteState,
+      ChangeNotifierProvider.value(
+        value: favoritesProvider,
+        child: MaterialApp(
+          home: RecipeDetailsScreen(recipe: recipe),
         ),
       ),
     );
@@ -127,7 +129,7 @@ void main() {
     // Initially not favorite — outline icon shown.
     expect(find.byIcon(Icons.favorite_border_rounded), findsOneWidget);
     expect(find.byIcon(Icons.favorite_rounded), findsNothing);
-    expect(favoriteState.isFavorite(recipe), isFalse);
+    expect(favoritesProvider.isFavorite(recipe), isFalse);
 
     // Tap favorite.
     await tester.tap(find.byIcon(Icons.favorite_border_rounded));
@@ -136,7 +138,7 @@ void main() {
     // Now filled icon shown and state updated.
     expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
     expect(find.byIcon(Icons.favorite_border_rounded), findsNothing);
-    expect(favoriteState.isFavorite(recipe), isTrue);
+    expect(favoritesProvider.isFavorite(recipe), isTrue);
 
     // Tap favorite again to unfavorite.
     await tester.tap(find.byIcon(Icons.favorite_rounded));
@@ -144,17 +146,20 @@ void main() {
 
     expect(find.byIcon(Icons.favorite_border_rounded), findsOneWidget);
     expect(find.byIcon(Icons.favorite_rounded), findsNothing);
-    expect(favoriteState.isFavorite(recipe), isFalse);
+    expect(favoritesProvider.isFavorite(recipe), isFalse);
   });
 
   testWidgets('Favorites screen renders empty state when no favorites exist',
       (WidgetTester tester) async {
-    final favoriteState = FavoriteState();
+    final favoritesProvider = FavoritesProvider();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: FavoritesScreen(favoriteState: favoriteState),
+      ChangeNotifierProvider.value(
+        value: favoritesProvider,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: FavoritesScreen(),
+          ),
         ),
       ),
     );
@@ -165,15 +170,19 @@ void main() {
         findsOneWidget);
   });
 
-  testWidgets('Favoriting recipe makes it appear in FavoritesScreen and unfavoriting removes it',
+  testWidgets(
+      'Favoriting recipe makes it appear in FavoritesScreen and unfavoriting removes it',
       (WidgetTester tester) async {
     final recipe = mockRecipes.first;
-    final favoriteState = FavoriteState();
+    final favoritesProvider = FavoritesProvider();
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: FavoritesScreen(favoriteState: favoriteState),
+      ChangeNotifierProvider.value(
+        value: favoritesProvider,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: FavoritesScreen(),
+          ),
         ),
       ),
     );
@@ -183,7 +192,7 @@ void main() {
     expect(find.text(recipe.name), findsNothing);
 
     // Favorite the recipe.
-    favoriteState.toggle(recipe);
+    favoritesProvider.addFavorite(recipe);
     await tester.pump();
 
     // Now visible in FavoritesScreen.
@@ -199,7 +208,8 @@ void main() {
     expect(find.text(recipe.name), findsNothing);
   });
 
-  testWidgets('Full flow: Home -> Recipe Details -> Favorite -> Back -> Favorites -> Details -> Unfavorite -> Back',
+  testWidgets(
+      'Full flow: Home -> Recipe Details -> Favorite -> Back -> Favorites -> Details -> Unfavorite -> Back',
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(800, 1200);
     tester.view.devicePixelRatio = 1.0;

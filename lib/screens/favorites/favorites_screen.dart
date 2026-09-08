@@ -1,59 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/constants/mock_data.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../models/recipe.dart';
-import '../../screens/recipe_details/recipe_details_screen.dart';
-import '../../services/favorite_state.dart';
+import '../../providers/favorites_provider.dart';
+import '../recipe_details/recipe_details_screen.dart';
 
 /// Screen showing the user's favorited recipes.
 ///
-/// Listens to [FavoriteState] to keep the list in sync when
+/// Listens to [FavoritesProvider] to keep the list in sync when
 /// recipes are favorited/unfavorited from other screens.
 class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({
-    super.key,
-    required this.favoriteState,
-  });
-
-  final FavoriteState favoriteState;
+  const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final favoritesProvider = context.watch<FavoritesProvider>();
+    final favorites = favoritesProvider.favorites;
+
     return SafeArea(
-      child: ListenableBuilder(
-        listenable: favoriteState,
-        builder: (context, _) {
-          final favorites = favoriteState.filterFavorites(mockRecipes);
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Title bar ──────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppConstants.pagePadding,
+              16,
+              AppConstants.pagePadding,
+              16,
+            ),
+            child: Text('Favorites', style: AppTextStyles.headingLarge),
+          ),
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Title bar ──────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppConstants.pagePadding,
-                  16,
-                  AppConstants.pagePadding,
-                  16,
-                ),
-                child: Text('Favorites', style: AppTextStyles.headingLarge),
-              ),
-
-              // ── Content ────────────────────────────────────────
-              Expanded(
-                child: favorites.isEmpty
-                    ? const _EmptyState()
-                    : _FavoriteList(
-                        recipes: favorites,
-                        favoriteState: favoriteState,
-                      ),
-              ),
-            ],
-          );
-        },
+          // ── Content ────────────────────────────────────────
+          Expanded(
+            child: favorites.isEmpty
+                ? const _EmptyState()
+                : _FavoriteList(recipes: favorites),
+          ),
+        ],
       ),
     );
   }
@@ -99,13 +87,9 @@ class _EmptyState extends StatelessWidget {
 
 /// Scrollable list of favorited recipe cards.
 class _FavoriteList extends StatelessWidget {
-  const _FavoriteList({
-    required this.recipes,
-    required this.favoriteState,
-  });
+  const _FavoriteList({required this.recipes});
 
   final List<Recipe> recipes;
-  final FavoriteState favoriteState;
 
   @override
   Widget build(BuildContext context) {
@@ -123,14 +107,13 @@ class _FavoriteList extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => RecipeDetailsScreen(
-                  recipe: recipe,
-                  favoriteState: favoriteState,
-                ),
+                builder: (_) => RecipeDetailsScreen(recipe: recipe),
               ),
             );
           },
-          onRemove: () => favoriteState.toggle(recipe),
+          onRemove: () {
+            context.read<FavoritesProvider>().removeFavorite(recipe);
+          },
         );
       },
     );
