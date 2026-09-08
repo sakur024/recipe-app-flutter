@@ -6,9 +6,12 @@ import 'core/theme/app_theme.dart';
 import 'providers/favorites_provider.dart';
 import 'screens/favorites/favorites_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'services/firebase_service.dart';
 import 'widgets/bottom_nav_bar.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseService.initialize();
   runApp(const RecipeApp());
 }
 
