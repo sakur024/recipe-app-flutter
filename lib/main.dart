@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
+import 'screens/favorites/favorites_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'services/favorite_state.dart';
 import 'widgets/bottom_nav_bar.dart';
 
 void main() {
@@ -25,8 +27,9 @@ class RecipeApp extends StatelessWidget {
 
 /// Root shell that holds the current screen and bottom navigation.
 ///
-/// Only the Home tab is functional at this milestone; the other
-/// tabs display simple placeholders.
+/// Holds the single [FavoriteState] instance in memory for the app session.
+/// Home and Favorites tabs are fully functional; Meal Plan and Settings
+/// remain placeholders.
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -36,17 +39,24 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
+  final FavoriteState _favoriteState = FavoriteState();
+
+  @override
+  void dispose() {
+    _favoriteState.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: const [
-          HomeScreen(),
-          _PlaceholderTab(label: 'Favorites'),
-          _PlaceholderTab(label: 'Meal Plan'),
-          _PlaceholderTab(label: 'Settings'),
+        children: [
+          HomeScreen(favoriteState: _favoriteState),
+          FavoritesScreen(favoriteState: _favoriteState),
+          const _PlaceholderTab(label: 'Meal Plan'),
+          const _PlaceholderTab(label: 'Settings'),
         ],
       ),
       bottomNavigationBar: AppBottomNavBar(

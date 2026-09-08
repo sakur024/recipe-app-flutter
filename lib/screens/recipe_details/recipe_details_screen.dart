@@ -4,17 +4,23 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../models/recipe.dart';
+import '../../services/favorite_state.dart';
 
 /// Full-screen recipe details shown when a recipe card is tapped.
 ///
-/// Receives a [Recipe] object and displays the image, metadata,
-/// rating, ingredients (with serving selector), and a
-/// "Start Cooking" CTA. Local state handles servings and favorite
-/// toggle; no global state management is used at this milestone.
+/// Receives a [Recipe] object and a shared [FavoriteState].
+/// Displays the image, metadata, rating, ingredients (with serving
+/// selector), and a "Start Cooking" CTA. Serving count is local
+/// state; favorite state is shared across the app.
 class RecipeDetailsScreen extends StatefulWidget {
-  const RecipeDetailsScreen({super.key, required this.recipe});
+  const RecipeDetailsScreen({
+    super.key,
+    required this.recipe,
+    required this.favoriteState,
+  });
 
   final Recipe recipe;
+  final FavoriteState favoriteState;
 
   @override
   State<RecipeDetailsScreen> createState() => _RecipeDetailsScreenState();
@@ -22,9 +28,9 @@ class RecipeDetailsScreen extends StatefulWidget {
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   late int _servings;
-  bool _isFavorite = false;
 
   Recipe get _recipe => widget.recipe;
+  FavoriteState get _favoriteState => widget.favoriteState;
 
   @override
   void initState() {
@@ -40,7 +46,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     if (_servings > 1) setState(() => _servings--);
   }
 
-  void _toggleFavorite() => setState(() => _isFavorite = !_isFavorite);
+  void _toggleFavorite() => _favoriteState.toggle(_recipe);
 
   // ── Build ────────────────────────────────────────────────────────
 
@@ -48,49 +54,56 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          // Scrollable content
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _HeroImage(
-                    imageUrl: _recipe.imageUrl,
-                    isFavorite: _isFavorite,
-                    onBack: () => Navigator.of(context).pop(),
-                    onFavorite: _toggleFavorite,
-                  ),
-                  const SizedBox(height: 20),
-                  _TitleSection(recipe: _recipe),
-                  const SizedBox(height: 16),
-                  _MetadataRow(recipe: _recipe),
-                  const SizedBox(height: 24),
-                  _IngredientsSection(
-                    recipe: _recipe,
-                    servings: _servings,
-                    onIncrement: _incrementServings,
-                    onDecrement: _decrementServings,
-                  ),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ),
+      body: ListenableBuilder(
+        listenable: _favoriteState,
+        builder: (context, _) {
+          final isFavorite = _favoriteState.isFavorite(_recipe);
 
-          // Fixed bottom CTA
-          _StartCookingButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Cooking mode coming soon!'),
-                  duration: Duration(seconds: 2),
+          return Column(
+            children: [
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeroImage(
+                        imageUrl: _recipe.imageUrl,
+                        isFavorite: isFavorite,
+                        onBack: () => Navigator.of(context).pop(),
+                        onFavorite: _toggleFavorite,
+                      ),
+                      const SizedBox(height: 20),
+                      _TitleSection(recipe: _recipe),
+                      const SizedBox(height: 16),
+                      _MetadataRow(recipe: _recipe),
+                      const SizedBox(height: 24),
+                      _IngredientsSection(
+                        recipe: _recipe,
+                        servings: _servings,
+                        onIncrement: _incrementServings,
+                        onDecrement: _decrementServings,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
-              );
-            },
-          ),
-        ],
+              ),
+
+              // Fixed bottom CTA
+              _StartCookingButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Cooking mode coming soon!'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -157,8 +170,9 @@ class _HeroImage extends StatelessWidget {
                 onTap: onBack,
               ),
               _CircleButton(
-                icon:
-                    isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                icon: isFavorite
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
                 iconColor: isFavorite ? AppColors.error : null,
                 onTap: onFavorite,
               ),
