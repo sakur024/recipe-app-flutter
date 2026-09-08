@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'core/theme/app_theme.dart';
-import 'screens/favorites/favorites_screen.dart';
-import 'screens/home/home_screen.dart';
-import 'screens/meal_plan/meal_plan_screen.dart';
-import 'screens/settings/settings_screen.dart';
-import 'widgets/bottom_nav_bar.dart';
-
 void main() {
   runApp(const RecipeApp());
 }
@@ -19,43 +12,32 @@ class RecipeApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Recipe App',
-      theme: AppTheme.light,
-      home: const MainShell(),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.green,
+        useMaterial3: true,
+      ),
+      home: const PlaceholderHomeScreen(),
     );
   }
 }
 
-class MainShell extends StatefulWidget {
-  const MainShell({super.key});
-
-  @override
-  State<MainShell> createState() => _MainShellState();
-}
-
-class _MainShellState extends State<MainShell> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    FavoritesScreen(),
-    MealPlanScreen(),
-    SettingsScreen(),
-  ];
+/// Temporary placeholder screen for Milestone 1.
+/// Will be replaced with the actual home screen in a future milestone.
+class PlaceholderHomeScreen extends StatelessWidget {
+  const PlaceholderHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      appBar: AppBar(
+        title: const Text('Recipe App'),
       ),
-      bottomNavigationBar: AppBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+      body: const Center(
+        child: Text(
+          'Recipe App\nProject Foundation Ready',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
