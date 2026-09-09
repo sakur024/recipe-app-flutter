@@ -254,18 +254,18 @@ class _MetadataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppConstants.pagePadding),
-      child: Row(
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 8,
         children: [
           _MetadataChip(
             icon: Icons.local_fire_department_rounded,
             label: '${recipe.calories} cal',
           ),
-          const SizedBox(width: 12),
           _MetadataChip(
             icon: Icons.timer_outlined,
             label: '${recipe.timeMinutes} min',
           ),
-          const SizedBox(width: 12),
           _MetadataChip(
             icon: Icons.category_outlined,
             label: recipe.category,

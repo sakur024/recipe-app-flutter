@@ -15,8 +15,9 @@ void main() {
 
     test('handles initialization call gracefully without throwing unhandled exceptions', () async {
       // Calling initialize without configured credentials in test environment
-      // should log notice and not crash the application.
+      // should log notice, not crash the application, and remain uninitialized.
       await expectLater(FirebaseService.initialize(), completes);
+      expect(FirebaseService.isInitialized, isFalse);
     });
   });
 }

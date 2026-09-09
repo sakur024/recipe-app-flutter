@@ -11,12 +11,19 @@ import 'app_text_styles.dart';
 abstract final class AppTheme {
   /// The application's light theme.
   static ThemeData get light {
-    return ThemeData(
+    final baseTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-
-      // ── Colors ───────────────────────────────────────────────────
       colorSchemeSeed: AppColors.primary,
+    );
+
+    final buttonTextStyle = baseTheme.textTheme.labelLarge?.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+    );
+
+    return baseTheme.copyWith(
       scaffoldBackgroundColor: AppColors.background,
 
       // ── AppBar ───────────────────────────────────────────────────
@@ -41,7 +48,7 @@ abstract final class AppTheme {
       ),
 
       // ── Text ─────────────────────────────────────────────────────
-      textTheme: const TextTheme(
+      textTheme: baseTheme.textTheme.copyWith(
         headlineLarge: AppTextStyles.headingLarge,
         headlineMedium: AppTextStyles.headingMedium,
         headlineSmall: AppTextStyles.headingSmall,
@@ -49,7 +56,7 @@ abstract final class AppTheme {
         bodyMedium: AppTextStyles.bodyMedium,
         bodySmall: AppTextStyles.bodySecondary,
         labelSmall: AppTextStyles.label,
-        labelLarge: AppTextStyles.button,
+        labelLarge: buttonTextStyle,
       ),
 
       // ── Elevated Button ──────────────────────────────────────────
@@ -57,7 +64,7 @@ abstract final class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.surface,
-          textStyle: AppTextStyles.button,
+          textStyle: buttonTextStyle,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
@@ -70,7 +77,7 @@ abstract final class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          textStyle: AppTextStyles.button,
+          textStyle: buttonTextStyle,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           side: const BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(
@@ -109,6 +116,50 @@ abstract final class AppTheme {
         color: AppColors.border,
         thickness: 0.5,
         space: 0,
+      ),
+    );
+  }
+
+  /// The application's dark theme.
+  static ThemeData get dark {
+    final baseTheme = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorSchemeSeed: AppColors.primary,
+    );
+
+    final buttonTextStyle = baseTheme.textTheme.labelLarge?.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+    );
+
+    return baseTheme.copyWith(
+      textTheme: baseTheme.textTheme.copyWith(
+        labelLarge: buttonTextStyle,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.surface,
+          textStyle: buttonTextStyle,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          textStyle: buttonTextStyle,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          side: const BorderSide(color: AppColors.border),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
     );
   }

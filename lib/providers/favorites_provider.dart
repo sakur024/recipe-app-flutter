@@ -50,6 +50,14 @@ class FavoritesProvider extends ChangeNotifier {
     }
   }
 
+  /// Clears all favorited recipes.
+  void clearFavorites() {
+    if (_favorites.isNotEmpty) {
+      _favorites.clear();
+      notifyListeners();
+    }
+  }
+
   /// Convenience alias for [toggleFavorite].
   void toggle(Recipe recipe) => toggleFavorite(recipe);
 }

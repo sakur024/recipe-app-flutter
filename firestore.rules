@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow create, update: if recipeId.matches('recipe_[1-7]');
+      allow delete: if false;
+    }
+  }
+}
