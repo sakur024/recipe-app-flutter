@@ -9,9 +9,18 @@ import 'package:recipe_app/screens/favorites/favorites_screen.dart';
 import 'package:recipe_app/screens/recipe_details/recipe_details_screen.dart';
 
 void main() {
-  testWidgets('App renders Home screen with key sections',
+  testWidgets('Fresh unauthenticated launch displays Login screen via AuthGate',
       (WidgetTester tester) async {
     await tester.pumpWidget(const RecipeApp());
+
+    expect(find.text('Recipe App'), findsOneWidget);
+    expect(find.text('Email Address'), findsOneWidget);
+    expect(find.text('Log In'), findsOneWidget);
+  });
+
+  testWidgets('App renders Home screen with key sections',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const RecipeApp(home: MainShell()));
 
     // Header greeting is visible.
     expect(find.textContaining('cooking today'), findsOneWidget);
@@ -35,7 +44,7 @@ void main() {
 
   testWidgets('Category filtering works on Home screen',
       (WidgetTester tester) async {
-    await tester.pumpWidget(const RecipeApp());
+    await tester.pumpWidget(const RecipeApp(home: MainShell()));
 
     // Tap Breakfast category
     await tester.tap(find.text('Breakfast'));
@@ -216,7 +225,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const RecipeApp());
+    await tester.pumpWidget(const RecipeApp(home: MainShell()));
 
     // 1. Home screen is loaded
     expect(find.text('Quick & Easy'), findsOneWidget);
